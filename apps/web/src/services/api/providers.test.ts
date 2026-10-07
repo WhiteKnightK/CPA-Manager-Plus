@@ -41,6 +41,18 @@ beforeEach(() => {
 });
 
 describe('providersApi auth-index preservation', () => {
+  it('round-trips display labels separately from routing prefixes and names', async () => {
+    mocks.get.mockResolvedValueOnce({ 'claude-api-key': [{ 'api-key': 'test-key', prefix: 'airouter-resource-2', label: 'Admin · eve · Claude', priority: 51 }] });
+    const configs = await providersApi.getClaudeConfigs();
+    expect(configs[0].label).toBe('Admin · eve · Claude');
+    mocks.get.mockResolvedValueOnce({ 'claude-api-key': [{ 'api-key': 'test-key', prefix: 'airouter-resource-2', label: 'Admin · eve · Claude', priority: 51 }] });
+    mocks.put.mockResolvedValueOnce({});
+    await providersApi.saveClaudeConfigs(configs);
+    expect(mocks.put).toHaveBeenCalledWith('/claude-api-key', [expect.objectContaining({ label: 'Admin · eve · Claude', prefix: 'airouter-resource-2', priority: 51 })]);
+    mocks.get.mockResolvedValueOnce({ 'openai-compatibility': [{ name: 'airouter-managed-resource-28', prefix: 'airouter-resource-28', label: 'Admin · gpt · OpenAI', 'base-url': 'https://pool.example.test/v1', 'api-key-entries': [{ 'api-key': 'test-key-2' }] }] });
+    const providers = await providersApi.getOpenAIProviders();
+    expect(providers[0].label).toBe('Admin · gpt · OpenAI');
+  });
   it('normalizes credential weights without collapsing explicit zero into omission', async () => {
     mocks.get.mockResolvedValueOnce({
       'codex-api-key': [
@@ -2119,4 +2131,3 @@ describe('providersApi meta provider management', () => {
     );
   });
 });
-

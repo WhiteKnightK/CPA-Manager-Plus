@@ -796,6 +796,7 @@ const serializeProviderKey = (config: ProviderKeyConfig) => {
   const payload: Record<string, unknown> = {};
   const apiKey = config.apiKey?.trim();
   if (apiKey) payload['api-key'] = apiKey;
+  if (config.label?.trim()) payload.label = config.label.trim();
   const authIndex = serializeAuthIndex(config.authIndex);
   if (authIndex) payload['auth-index'] = authIndex;
   if (config.priority !== undefined) payload.priority = config.priority;
@@ -953,6 +954,7 @@ const serializeOpenAIProvider = (provider: OpenAIProviderConfig) => {
       : [],
   };
   const authIndex = serializeAuthIndex(provider.authIndex);
+  if (provider.label?.trim()) payload.label = provider.label.trim();
   if (authIndex) payload['auth-index'] = authIndex;
   if (provider.prefix?.trim()) payload.prefix = provider.prefix.trim();
   if (provider.disabled !== undefined) payload.disabled = provider.disabled;

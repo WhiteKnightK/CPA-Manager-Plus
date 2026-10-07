@@ -8,6 +8,17 @@ import {
 import { sha256Hex } from './apiKeyHash';
 
 describe('source resolver', () => {
+  it('uses managed display labels for historical prefixes without changing identities', () => {
+    const inputs = {
+      claudeApiKeys: [{ apiKey: 'test-key', prefix: 'airouter-resource-2', authIndex: 'stable-claude', label: 'Admin · eve · Claude' }],
+      openaiCompatibility: [{ name: 'airouter-managed-resource-28', prefix: 'airouter-resource-28', label: 'Admin · gpt · OpenAI', baseUrl: 'https://pool.example.test/v1', apiKeyEntries: [{ apiKey: 'test-key-2', authIndex: 'stable-openai' }] }],
+    };
+    const map = buildSourceInfoMap(inputs);
+    expect(resolveSourceDisplay('airouter-resource-2', 'stable-claude', map, new Map()).displayName).toBe('Admin · eve · Claude');
+    expect(resolveSourceDisplay('airouter-resource-28', 'stable-openai', map, new Map()).displayName).toBe('Admin · gpt · OpenAI');
+    const renamed = buildSourceInfoMap({ ...inputs, claudeApiKeys: [{ ...inputs.claudeApiKeys[0], label: 'Renamed admin · changed note · Claude' }] });
+    expect(resolveSourceDisplay('airouter-resource-2', 'stable-claude', renamed, new Map()).identityKey).toBe(resolveSourceDisplay('airouter-resource-2', 'stable-claude', map, new Map()).identityKey);
+  });
   it('resolves CPA masked Codex API key sources to readable base URL hosts', () => {
     const sourceInfoMap = buildSourceInfoMap({
       codexApiKeys: [

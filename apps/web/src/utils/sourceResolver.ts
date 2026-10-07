@@ -88,7 +88,7 @@ const extractHost = (baseUrl: string | undefined) => {
 };
 
 const buildProviderDisplayNames = (
-  items: Array<{ prefix?: string; name?: string; baseUrl?: string }>,
+  items: Array<{ label?: string; prefix?: string; name?: string; baseUrl?: string }>,
   fallbackLabel: string
 ) => {
   const hostCounts = new Map<string, number>();
@@ -103,6 +103,8 @@ const buildProviderDisplayNames = (
 
   const hostOrdinals = new Map<string, number>();
   return items.map((item, index) => {
+    const label = item.label?.trim();
+    if (label) return label;
     const prefix = item.prefix?.trim();
     if (prefix) return prefix;
 
@@ -142,6 +144,7 @@ const buildOpenAIKeyDisplayNameMap = (providers: OpenAIProviderConfig[]) => {
       entries.push({
         key: `${providerIndex}:${entryIndex}`,
         name:
+          provider.label?.trim() ||
           provider.prefix?.trim() ||
           provider.name?.trim() ||
           extractHost(provider.baseUrl) ||
@@ -176,6 +179,7 @@ export function buildSourceInfoMap(input: SourceInfoMapInput): SourceInfoMap {
   const providers: Array<{
     items: Array<{
       apiKey?: string;
+      label?: string;
       prefix?: string;
       authIndex?: string;
       excludedModels?: string[];
