@@ -161,6 +161,7 @@ export interface GeminiKeyConfig {
 }
 
 export interface ProviderKeyConfig {
+  label?: string;
   apiKey: string;
   priority?: number;
   weight?: number;
@@ -185,6 +186,7 @@ export interface ProviderKeyConfig {
 }
 
 export interface OpenAIProviderConfig {
+  label?: string;
   name: string;
   prefix?: string;
   baseUrl: string;

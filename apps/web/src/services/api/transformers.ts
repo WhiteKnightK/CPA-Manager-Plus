@@ -205,6 +205,8 @@ const normalizeProviderKeyConfig = (item: unknown): ProviderKeyConfig | null => 
   if (!trimmed && !authIndex) return null;
 
   const config: ProviderKeyConfig = { apiKey: trimmed };
+  const label = normalizeString(record?.label);
+  if (label) config.label = label;
   const priority = record?.priority ?? record?.['priority'];
   if (priority !== undefined && priority !== null && String(priority).trim() !== '') {
     const parsed = Number(priority);
@@ -360,6 +362,8 @@ const normalizeOpenAIProvider = (provider: unknown): OpenAIProviderConfig | null
     baseUrl: String(baseUrl),
     apiKeyEntries,
   };
+  const label = normalizeString(provider.label);
+  if (label) result.label = label;
 
   const disabled = normalizeBoolean(provider.disabled ?? provider['disabled']);
   if (disabled !== undefined) result.disabled = disabled;
