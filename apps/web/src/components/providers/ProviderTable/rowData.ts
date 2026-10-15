@@ -110,12 +110,13 @@ function buildKeyConfigRow(
   usageByProvider: ProviderRecentUsageMap
 ): ProviderRow {
   const modelNames = collectModelNames(config.models);
+  const displayLabel = 'label' in config && typeof config.label === 'string' ? config.label.trim() : '';
   return {
     key: `${kind}:${getProviderConfigKey(config, originalIndex)}`,
     kind,
     originalIndex,
-    label: maskApiKey(config.apiKey),
-    sortName: getKeyConfigSortName(config),
+    label: displayLabel || maskApiKey(config.apiKey),
+    sortName: displayLabel || getKeyConfigSortName(config),
     baseUrl: config.baseUrl ?? '',
     priority: config.priority,
     modelNames,
@@ -132,6 +133,7 @@ function buildKeyConfigRow(
     ).success,
     statusData: getProviderRecentStatusData(usageByProvider, kind, config.apiKey, config.baseUrl),
     haystack: buildHaystack([
+      displayLabel,
       config.apiKey,
       config.prefix,
       config.baseUrl,
@@ -153,8 +155,8 @@ function buildOpenAIRow(
     key: `openai:${getOpenAIProviderKey(provider, originalIndex)}`,
     kind: 'openai',
     originalIndex,
-    label: provider.name,
-    sortName: provider.name,
+    label: provider.label?.trim() || provider.name,
+    sortName: provider.label?.trim() || provider.name,
     baseUrl: provider.baseUrl ?? '',
     priority: provider.priority,
     modelNames,
@@ -166,6 +168,7 @@ function buildOpenAIRow(
     recentSuccess: getOpenAIProviderRecentWindowStats(provider, usageByProvider).success,
     statusData: getOpenAIProviderRecentStatusData(provider, usageByProvider),
     haystack: buildHaystack([
+      provider.label,
       provider.name,
       provider.prefix,
       provider.baseUrl,

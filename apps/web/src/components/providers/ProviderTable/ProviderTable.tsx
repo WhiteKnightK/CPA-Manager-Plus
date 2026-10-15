@@ -240,7 +240,7 @@ export function ProviderTable({
 
             <div className={styles.cellIdentity} role="cell">
               <div className={styles.identityMain}>
-                <span className={styles.identityLabel} title={row.label}>
+                <span className={`${styles.identityLabel} ${row.label.startsWith('供给者：') ? styles.managedIdentityLabel : ''}`} title={row.label}>
                   {row.label}
                 </span>
                 {row.kind === 'openai' && (

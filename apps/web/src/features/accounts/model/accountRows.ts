@@ -285,6 +285,7 @@ const readPlanType = (file: AuthFileItem): string | null => {
 };
 
 const resolveAccountLabel = (file: AuthFileItem): string =>
+  (readString(file.label).startsWith('供给者：') ? readString(file.label) : '') ||
   readString(file.email) ||
   readString(file.account) ||
   readString(file.label) ||
